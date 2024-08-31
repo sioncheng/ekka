@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "ekka.srv.api.message";
+option java_outer_classname = "MessageServiceProto";
+
+// The service definition.
+service MessageService {
+    rpc SendMessage (MessageRequest) returns (MessageReply) {}
+}
+
+// The request message
+message MessageRequest {
+    string id = 1;
+    int32 messageType = 2;
+    bytes messagePayload = 3;
+}
+
+// The response message
+message MessageReply {
+    string id = 1;
+    int32 messageType = 2;
+    bytes messagePayload = 3;
+}

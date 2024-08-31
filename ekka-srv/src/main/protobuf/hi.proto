@@ -1,0 +1,23 @@
+//#service-request-reply
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "ekka.srv.api.hi";
+option java_outer_classname = "HidProto";
+
+// The greeting service definition.
+service HiService {
+    // Sends a greeting
+    rpc SayHi (HiRequest) returns (HiReply) {}
+}
+
+// The request message containing the user's name.
+message HiRequest {
+    string name = 1;
+}
+
+// The response message containing the greetings
+message HiReply {
+    string message = 1;
+}
+//#service-request-reply

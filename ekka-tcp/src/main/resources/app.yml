@@ -1,0 +1,9 @@
+app:
+  name: ekka-tcp
+  server:
+    host: 0.0.0.0
+    port: 8765
+    workerThreads: 20
+  messageProcessor:
+    srvGrpcHost: localhost
+    srvGrpcPort: 8080
