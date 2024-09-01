@@ -15,9 +15,9 @@ object SrvStarter {
 
         val conf = ConfigFactory.parseString("""
             akka.http.server.enable-http2 = on
-        """).withFallback(ConfigFactory.defaultApplication)
+        """).withFallback(ConfigFactory.load("application.conf"))
 
-        val system = ActorSystem[Nothing](Behaviors.empty, "GreeterServer", conf)
+        val system = ActorSystem[Nothing](Behaviors.empty, "SrvServer", conf)
         val server = ApiServer(system)
 
         server.run()

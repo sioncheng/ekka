@@ -21,6 +21,7 @@ private static final long serialVersionUID = 0L;
   }
   private MessageReply() {
     id_ = "";
+    remote_ = "";
     messagePayload_ = com.google.protobuf.ByteString.EMPTY;
   }
 
@@ -60,12 +61,18 @@ private static final long serialVersionUID = 0L;
             id_ = s;
             break;
           }
-          case 16: {
+          case 18: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            remote_ = s;
+            break;
+          }
+          case 24: {
 
             messageType_ = input.readInt32();
             break;
           }
-          case 26: {
+          case 34: {
 
             messagePayload_ = input.readBytes();
             break;
@@ -138,20 +145,56 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int MESSAGETYPE_FIELD_NUMBER = 2;
+  public static final int REMOTE_FIELD_NUMBER = 2;
+  private volatile java.lang.Object remote_;
+  /**
+   * <code>string remote = 2;</code>
+   * @return The remote.
+   */
+  public java.lang.String getRemote() {
+    java.lang.Object ref = remote_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      remote_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string remote = 2;</code>
+   * @return The bytes for remote.
+   */
+  public com.google.protobuf.ByteString
+      getRemoteBytes() {
+    java.lang.Object ref = remote_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      remote_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int MESSAGETYPE_FIELD_NUMBER = 3;
   private int messageType_;
   /**
-   * <code>int32 messageType = 2;</code>
+   * <code>int32 messageType = 3;</code>
    * @return The messageType.
    */
   public int getMessageType() {
     return messageType_;
   }
 
-  public static final int MESSAGEPAYLOAD_FIELD_NUMBER = 3;
+  public static final int MESSAGEPAYLOAD_FIELD_NUMBER = 4;
   private com.google.protobuf.ByteString messagePayload_;
   /**
-   * <code>bytes messagePayload = 3;</code>
+   * <code>bytes messagePayload = 4;</code>
    * @return The messagePayload.
    */
   public com.google.protobuf.ByteString getMessagePayload() {
@@ -175,11 +218,14 @@ private static final long serialVersionUID = 0L;
     if (!getIdBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
     }
+    if (!getRemoteBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, remote_);
+    }
     if (messageType_ != 0) {
-      output.writeInt32(2, messageType_);
+      output.writeInt32(3, messageType_);
     }
     if (!messagePayload_.isEmpty()) {
-      output.writeBytes(3, messagePayload_);
+      output.writeBytes(4, messagePayload_);
     }
     unknownFields.writeTo(output);
   }
@@ -193,13 +239,16 @@ private static final long serialVersionUID = 0L;
     if (!getIdBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
     }
+    if (!getRemoteBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, remote_);
+    }
     if (messageType_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, messageType_);
+        .computeInt32Size(3, messageType_);
     }
     if (!messagePayload_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, messagePayload_);
+        .computeBytesSize(4, messagePayload_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -218,6 +267,8 @@ private static final long serialVersionUID = 0L;
 
     if (!getId()
         .equals(other.getId())) return false;
+    if (!getRemote()
+        .equals(other.getRemote())) return false;
     if (getMessageType()
         != other.getMessageType()) return false;
     if (!getMessagePayload()
@@ -235,6 +286,8 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + ID_FIELD_NUMBER;
     hash = (53 * hash) + getId().hashCode();
+    hash = (37 * hash) + REMOTE_FIELD_NUMBER;
+    hash = (53 * hash) + getRemote().hashCode();
     hash = (37 * hash) + MESSAGETYPE_FIELD_NUMBER;
     hash = (53 * hash) + getMessageType();
     hash = (37 * hash) + MESSAGEPAYLOAD_FIELD_NUMBER;
@@ -378,6 +431,8 @@ private static final long serialVersionUID = 0L;
       super.clear();
       id_ = "";
 
+      remote_ = "";
+
       messageType_ = 0;
 
       messagePayload_ = com.google.protobuf.ByteString.EMPTY;
@@ -409,6 +464,7 @@ private static final long serialVersionUID = 0L;
     public ekka.srv.api.message.MessageReply buildPartial() {
       ekka.srv.api.message.MessageReply result = new ekka.srv.api.message.MessageReply(this);
       result.id_ = id_;
+      result.remote_ = remote_;
       result.messageType_ = messageType_;
       result.messagePayload_ = messagePayload_;
       onBuilt();
@@ -461,6 +517,10 @@ private static final long serialVersionUID = 0L;
       if (other == ekka.srv.api.message.MessageReply.getDefaultInstance()) return this;
       if (!other.getId().isEmpty()) {
         id_ = other.id_;
+        onChanged();
+      }
+      if (!other.getRemote().isEmpty()) {
+        remote_ = other.remote_;
         onChanged();
       }
       if (other.getMessageType() != 0) {
@@ -574,16 +634,92 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private java.lang.Object remote_ = "";
+    /**
+     * <code>string remote = 2;</code>
+     * @return The remote.
+     */
+    public java.lang.String getRemote() {
+      java.lang.Object ref = remote_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        remote_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string remote = 2;</code>
+     * @return The bytes for remote.
+     */
+    public com.google.protobuf.ByteString
+        getRemoteBytes() {
+      java.lang.Object ref = remote_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        remote_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string remote = 2;</code>
+     * @param value The remote to set.
+     * @return This builder for chaining.
+     */
+    public Builder setRemote(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      remote_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string remote = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearRemote() {
+      
+      remote_ = getDefaultInstance().getRemote();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string remote = 2;</code>
+     * @param value The bytes for remote to set.
+     * @return This builder for chaining.
+     */
+    public Builder setRemoteBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      remote_ = value;
+      onChanged();
+      return this;
+    }
+
     private int messageType_ ;
     /**
-     * <code>int32 messageType = 2;</code>
+     * <code>int32 messageType = 3;</code>
      * @return The messageType.
      */
     public int getMessageType() {
       return messageType_;
     }
     /**
-     * <code>int32 messageType = 2;</code>
+     * <code>int32 messageType = 3;</code>
      * @param value The messageType to set.
      * @return This builder for chaining.
      */
@@ -594,7 +730,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 messageType = 2;</code>
+     * <code>int32 messageType = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearMessageType() {
@@ -606,14 +742,14 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.ByteString messagePayload_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>bytes messagePayload = 3;</code>
+     * <code>bytes messagePayload = 4;</code>
      * @return The messagePayload.
      */
     public com.google.protobuf.ByteString getMessagePayload() {
       return messagePayload_;
     }
     /**
-     * <code>bytes messagePayload = 3;</code>
+     * <code>bytes messagePayload = 4;</code>
      * @param value The messagePayload to set.
      * @return This builder for chaining.
      */
@@ -627,7 +763,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>bytes messagePayload = 3;</code>
+     * <code>bytes messagePayload = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearMessagePayload() {

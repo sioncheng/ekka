@@ -13,6 +13,6 @@ object MessageServiceImpl{
 class MessageServiceImpl(system: ActorSystem[_]) extends MessageService {
   override def sendMessage(in: MessageRequest): Future[MessageReply] = {
     system.log.info("sendMessage {} {} {}", in.id, in.messageType, in.messagePayload)
-    Future.successful(MessageReply(in.id, in.messageType * -1 , ByteString.fromHex("ab")))
+    Future.successful(MessageReply(in.id, in.remote, in.messageType * -1 , ByteString.fromHex("ab")))
   }
 }

@@ -20,13 +20,25 @@ public interface MessageReplyOrBuilder extends
       getIdBytes();
 
   /**
-   * <code>int32 messageType = 2;</code>
+   * <code>string remote = 2;</code>
+   * @return The remote.
+   */
+  java.lang.String getRemote();
+  /**
+   * <code>string remote = 2;</code>
+   * @return The bytes for remote.
+   */
+  com.google.protobuf.ByteString
+      getRemoteBytes();
+
+  /**
+   * <code>int32 messageType = 3;</code>
    * @return The messageType.
    */
   int getMessageType();
 
   /**
-   * <code>bytes messagePayload = 3;</code>
+   * <code>bytes messagePayload = 4;</code>
    * @return The messagePayload.
    */
   com.google.protobuf.ByteString getMessagePayload();

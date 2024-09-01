@@ -62,6 +62,8 @@ public class ServerMessageProcessor implements MessageProcessor {
             case 0:
                 process0(tcpMessage, ctx);
                 break;
+            case 1:
+                break;
             default:
                 break;
         }
@@ -70,6 +72,7 @@ public class ServerMessageProcessor implements MessageProcessor {
     private void process0(TcpMessage tcpMessage, ChannelHandlerContext ctx) {
         MessageRequest request = MessageRequest.newBuilder()
             .setId(ctx.channel().remoteAddress().toString())
+            .setRemote(ctx.channel().remoteAddress().toString())
             .setMessageType(tcpMessage.getMessageType())
             .setMessagePayload(tcpMessage.getMessagePayload() == null ? ByteString.EMPTY: ByteString.copyFrom(tcpMessage.getMessagePayload()))
             .build();
@@ -78,6 +81,8 @@ public class ServerMessageProcessor implements MessageProcessor {
             @Override
             public void onNext(MessageReply value) {
                 log.info("onNext {} {}", value, ctx.channel().remoteAddress());
+            
+                reply(value);
             }
 
             @Override
@@ -92,9 +97,19 @@ public class ServerMessageProcessor implements MessageProcessor {
         });
     }
 
-    // private void reply(MessageReply reply) {
-    //     String id = reply.getId();
-    //     ChannelHandlerContext ctx = remoteMap.get(id);
-    //     log.info("reply {} {}", id, ctx.channel().remoteAddress());
-    // }
+    private void reply(MessageReply reply) {
+        String remote = reply.getRemote();
+        ChannelHandlerContext ctx = remoteMap.get(remote);
+        if (null == ctx) {
+            log.warn("remote {} no ctx", remote);
+            return;
+        }
+
+        log.info("reply {} {}", remote, ctx.channel().remoteAddress());
+        TcpMessage tcpMessage = new TcpMessage();
+        tcpMessage.setMessageType((byte)reply.getMessageType());
+        tcpMessage.setMessagePayload(reply.getMessagePayload().toByteArray());
+    
+        ctx.writeAndFlush(tcpMessage);
+    }
 }
