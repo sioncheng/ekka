@@ -27,7 +27,7 @@ func TestFindByUsernameWithUsernameNotExists(t *testing.T) {
 	if err != gorm.ErrRecordNotFound {
 		log.Fatal(err)
 	}
-	if user.Id != 0 {
+	if user.ID != 0 {
 		log.Fatal(user)
 	}
 }
@@ -50,7 +50,7 @@ func TestFindByUsernameWithUsernameExists(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if user.Id != 1 {
+	if user.ID != 1 {
 		log.Fatal(user)
 	}
 
@@ -77,7 +77,7 @@ func TestCreateUser(t *testing.T) {
 	n, err := repo.CreateUser(&user)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, int64(1), n)
-	assert.Equal(t, int64(1), user.Id)
+	assert.Equal(t, int64(1), user.ID)
 
 	t.Log(user, eq)
 }

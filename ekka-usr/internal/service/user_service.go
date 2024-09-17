@@ -64,7 +64,18 @@ func (p *UserService) SignIn(req rest.SignInReq) (rest.SignInRes, error) {
 
 	md5 := MD5WithSalt(req.Password, u.PasswdSalt)
 	if md5 == u.Passwd {
-		return rest.SignInRes{Username: req.Username}, nil
+		var h int
+		if req.ExpiresInHours > 0 {
+			h = req.ExpiresInHours
+		} else {
+			h = 24
+		}
+		token, err := GenJwt(req.Username, h)
+		if err != nil {
+			return rest.SignInRes{}, err
+		} else {
+			return rest.SignInRes{Username: req.Username, Token: token}, nil
+		}
 	} else {
 		return rest.SignInRes{}, ErrSvcWrongUsernameOrPassword
 	}

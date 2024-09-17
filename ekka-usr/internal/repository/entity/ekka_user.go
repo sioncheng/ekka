@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type EkkaUser struct {
-	ID         uint      `gorm:"primary_key;column:id"`
+	ID         int64     `gorm:"primary_key;column:id"`
 	Username   string    `gorm:"column:username"`
 	Passwd     string    `gorm:"column:passwd"`
 	PasswdSalt string    `gorm:"column:passwd_salt"`
