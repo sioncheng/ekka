@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/sioncheng/ekka/ekka-usr/internal"
+	"github.com/sioncheng/ekka/ekka-usr/internal/repository"
 )
 
 func main() {
@@ -19,6 +20,9 @@ func main() {
 
 	httpAddr := "0.0.0.0:9090"
 	grpcAddr := "0.0.0.0:9091"
+
+	dsn := "pig:123456@tcp(mbp2011:3306)/ekka_usr?charset=utf8mb4&parseTime=True&loc=Local"
+	repository.InitDb(dsn)
 
 	grpcSrv := internal.NewGrpcServer()
 

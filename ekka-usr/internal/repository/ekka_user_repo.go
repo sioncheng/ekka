@@ -1,13 +1,15 @@
 package repository
 
 import (
-	"log"
-
 	"github.com/sioncheng/ekka/ekka-usr/internal/repository/entity"
 	"gorm.io/gorm"
 )
 
 type EkkaUserRepository struct{}
+
+func NewEkkaUserRepository() *EkkaUserRepository {
+	return &EkkaUserRepository{}
+}
 
 func (p *EkkaUserRepository) CreateUser(user *entity.EkkaUser) (int64, error) {
 	result := db.Create(user)
@@ -22,9 +24,8 @@ func (p *EkkaUserRepository) FindUserByUsername(username string) (entity.EkkaUse
 	}
 
 	if result.Error == gorm.ErrRecordNotFound {
-		return user, ErrRecordNotFound
+		return user, ErrRepoRecordNotFound
 	}
 
-	log.Fatal("unexpected error", result)
 	return user, result.Error
 }

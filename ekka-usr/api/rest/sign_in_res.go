@@ -1,3 +1,5 @@
 package rest
 
-type SignInRes struct{}
+type SignInRes struct {
+	Username string
+}

@@ -1,3 +1,5 @@
 package rest
 
-type SignUpRes struct{}
+type SignUpRes struct {
+	Username string `json:"username"`
+}
