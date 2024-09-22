@@ -5,15 +5,17 @@ import scala.concurrent.Future
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpRequest
 import akka.http.scaladsl.model.HttpResponse
-import ekka.srv.api.helloworld.GreeterServiceHandler
+import ekka.srv.api.hi.GreeterServiceHandler
 
 import scala.concurrent.duration._
 import scala.util.Success
 import scala.util.Failure
-import ekka.srv.api.hi.HiServiceHandler
 import akka.grpc.scaladsl.ServiceHandler
 import org.checkerframework.checker.units.qual.h
 import ekka.srv.api.message.MessageServiceHandler
+import akka.grpc.scaladsl.ServerReflection
+import ekka.srv.api.message.MessageService
+import ekka.srv.api.hi.GreeterService
 
 
 object ApiServer {
@@ -31,14 +33,14 @@ class ApiServer(system: ActorSystem[_]) {
         val hello : PartialFunction[HttpRequest, Future[HttpResponse]] = 
             GreeterServiceHandler.partial(GreeterServiceImpl(system))
 
-        // val hi: PartialFunction[HttpRequest, Future[HttpResponse]] =
-        //     HiServiceHandler.partial(HiServiceImpl(system))
-
         val messageService: PartialFunction[HttpRequest, Future[HttpResponse]] =
             MessageServiceHandler.partial(MessageServiceImpl(system))
 
+        val reflections: PartialFunction[HttpRequest, Future[HttpResponse]] =
+            ServerReflection.partial(List(GreeterService, MessageService))
+
         val services: HttpRequest => Future[HttpResponse] =
-            ServiceHandler.concatOrNotFound(hello, messageService)
+            ServiceHandler.concatOrNotFound(hello, messageService, reflections)
 
         val bound : Future[Http.ServerBinding] = 
             Http().newServerAt("0.0.0.0", 8080)

@@ -1,9 +1,9 @@
 package ekka.srv
 
-import ekka.srv.api.helloworld.GreeterService
-import ekka.srv.api.helloworld.HelloRequest
+import ekka.srv.api.hi.GreeterService
+import ekka.srv.api.hi.HelloRequest
 import scala.concurrent.Future
-import ekka.srv.api.helloworld.HelloReply
+import ekka.srv.api.hi.HelloReply
 import akka.actor.typed.ActorSystem
 
 object GreeterServiceImpl {
