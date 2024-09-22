@@ -2,8 +2,10 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-option java_package = "ekka.srv.api.helloworld";
+option java_package = "ekka.srv.api.hi";
 option java_outer_classname = "HelloWorldProto";
+
+package ekka.srv.api.hi;
 
 // The greeting service definition.
 service GreeterService {
