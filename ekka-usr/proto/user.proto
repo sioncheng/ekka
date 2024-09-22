@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package api.proto;
+
+option go_package="/api/proto";
+
+service UserService {
+    rpc AuthToken(AuthTokenReq) returns (AuthTokenRes) {}
+}
+
+message AuthTokenReq {
+    string username = 1;
+    string token = 2;
+}
+
+message AuthTokenRes {
+    string username = 1;
+    bool ok = 2;
+}
