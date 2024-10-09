@@ -6,6 +6,7 @@ scalaVersion := "2.13.14"
 val akkaVersion = "2.9.3"
 lazy val akkaGrpcVersion = sys.props.getOrElse("akka-grpc.version", "2.4.3")
 
+resolvers += "Akka library repository".at("https://repo.akka.io/maven")
 enablePlugins(AkkaGrpcPlugin)
 
 // This is the default - both client and server
