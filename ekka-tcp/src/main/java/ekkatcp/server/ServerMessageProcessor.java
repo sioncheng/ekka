@@ -12,6 +12,8 @@ import ekka.srv.api.message.MessageServiceGrpc.MessageServiceStub;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,35 +56,53 @@ public class ServerMessageProcessor implements MessageProcessor {
     }
 
     @Override
-    public void processMessage(TcpMessage tcpMessage, ChannelHandlerContext ctx) {
+    public void processTcpMessage(TcpMessage tcpMessage, ChannelHandlerContext ctx) {
         byte t = tcpMessage.getMessageType();
         log.info("processMessage {}", t);
 
         switch (t) {
-            case 0:
-                process0(tcpMessage, ctx);
+            case MessageType.SIGNIN_REQ:
+                processSignin(tcpMessage, ctx);
                 break;
-            case 1:
+            case MessageType.PING:
+                processPing(tcpMessage, ctx);
+                break;
+            case MessageType.SEND_MSG:
+                processSendMessage(tcpMessage, ctx);
                 break;
             default:
                 break;
         }
     }
 
-    private void process0(TcpMessage tcpMessage, ChannelHandlerContext ctx) {
+    private void processSignin(TcpMessage tcpMessage, ChannelHandlerContext ctx) {
+        forwardToServer(tcpMessage, ctx);
+    }
+
+    private void processPing(TcpMessage tcpMessage, ChannelHandlerContext ctx) {
+        writeTcpMessage(ctx, MessageType.PONG, null);
+        forwardToServer(tcpMessage, ctx);
+    }
+
+    private void processSendMessage(TcpMessage tcpMessage, ChannelHandlerContext ctx) {
+        forwardToServer(tcpMessage, ctx);
+    }
+
+    private void forwardToServer(TcpMessage tcpMessage, ChannelHandlerContext ctx) {
+        ByteString messagePayload = 
+        tcpMessage.getMessagePayload() == null ? ByteString.EMPTY: ByteString.copyFrom(tcpMessage.getMessagePayload());
         MessageRequest request = MessageRequest.newBuilder()
             .setId(ctx.channel().remoteAddress().toString())
             .setRemote(ctx.channel().remoteAddress().toString())
             .setMessageType(tcpMessage.getMessageType())
-            .setMessagePayload(tcpMessage.getMessagePayload() == null ? ByteString.EMPTY: ByteString.copyFrom(tcpMessage.getMessagePayload()))
+            .setMessagePayload(messagePayload)
             .build();
 
         messageServiceStub.sendMessage(request, new StreamObserver<MessageReply>() {
             @Override
             public void onNext(MessageReply value) {
                 log.info("onNext {} {}", value, ctx.channel().remoteAddress());
-            
-                reply(value);
+                replyToClient(value);
             }
 
             @Override
@@ -97,7 +117,7 @@ public class ServerMessageProcessor implements MessageProcessor {
         });
     }
 
-    private void reply(MessageReply reply) {
+    private void replyToClient(MessageReply reply) {
         String remote = reply.getRemote();
         ChannelHandlerContext ctx = remoteMap.get(remote);
         if (null == ctx) {
@@ -106,10 +126,19 @@ public class ServerMessageProcessor implements MessageProcessor {
         }
 
         log.info("reply {} {}", remote, ctx.channel().remoteAddress());
+        writeTcpMessage(ctx, (byte)reply.getMessageType(), reply.getMessagePayload().toByteArray());
+    }
+
+    private void writeTcpMessage(ChannelHandlerContext ctx, byte type, byte[] payload) {
         TcpMessage tcpMessage = new TcpMessage();
-        tcpMessage.setMessageType((byte)reply.getMessageType());
-        tcpMessage.setMessagePayload(reply.getMessagePayload().toByteArray());
+        tcpMessage.setMessageType(type);
+        tcpMessage.setMessagePayload(payload);
     
-        ctx.writeAndFlush(tcpMessage);
+        ctx.writeAndFlush(tcpMessage).addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                log.info("write to {}", ctx.channel().remoteAddress());
+            }
+        });
     }
 }

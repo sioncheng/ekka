@@ -43,7 +43,7 @@ public class TcpMessageHandler extends SimpleChannelInboundHandler<TcpMessage> {
 
         log.info("channelRead0 {}", msg.getMessageType());
         if (messageProcessor != null) {
-            messageProcessor.processMessage(msg, ctx);
+            messageProcessor.processTcpMessage(msg, ctx);
         }
     }
 }
