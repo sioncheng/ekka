@@ -13,7 +13,7 @@ object UserClient {
     Behaviors.setup {ctx =>
       Behaviors.receiveMessage[MessageProtocol.Command] { msg =>
         msg match {
-            case MessageReq(message) => 
+            case MessageReq(message, replyTo) => 
                 ctx.log.info("req {}", message.id, message.remote)
                 Behaviors.same
             case x: Any =>

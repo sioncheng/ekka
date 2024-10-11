@@ -16,6 +16,10 @@ import ekka.srv.api.message.MessageServiceHandler
 import akka.grpc.scaladsl.ServerReflection
 import ekka.srv.api.message.MessageService
 import ekka.srv.api.hi.GreeterService
+import akka.actor.typed.ActorRef
+import akka.cluster.sharding.typed.ShardingEnvelope
+import akka.cluster.sharding.typed.scaladsl.ClusterSharding
+import akka.cluster.sharding.typed.scaladsl.Entity
 
 object ApiServer {
   def apply(system: ActorSystem[_]) = new ApiServer(system)
@@ -27,13 +31,17 @@ class ApiServer(system: ActorSystem[_]) {
     system.log.info("GreeterServer#run")
 
     implicit val sys = system
-    implicit val ec  = sys.executionContext
+    implicit val ec = sys.executionContext
+
+    val sharding = ClusterSharding(system)
+    val shardingRegion: ActorRef[ShardingEnvelope[cluster.MessageProtocol.Command]] =
+      sharding.init(Entity(cluster.RemoteClient.TypeKey)(ctx => cluster.RemoteClient(ctx.entityId)))
 
     val hello: PartialFunction[HttpRequest, Future[HttpResponse]] =
       GreeterServiceHandler.partial(GreeterServiceImpl(system))
 
     val messageService: PartialFunction[HttpRequest, Future[HttpResponse]] =
-      MessageServiceHandler.partial(MessageServiceImpl(system))
+      MessageServiceHandler.partial(MessageServiceImpl(system, shardingRegion))
 
     val reflections: PartialFunction[HttpRequest, Future[HttpResponse]] =
       ServerReflection.partial(List(GreeterService, MessageService))
