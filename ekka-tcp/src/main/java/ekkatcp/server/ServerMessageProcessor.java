@@ -1,5 +1,8 @@
 package ekkatcp.server;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,15 +16,11 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ServerMessageProcessor implements MessageProcessor {
 
-    private static Logger log = LoggerFactory.getLogger(ServerMessageProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(ServerMessageProcessor.class);
 
     private final MessageProcessorConfig config;
 
@@ -69,7 +68,6 @@ public class ServerMessageProcessor implements MessageProcessor {
                 break;
             case MessageType.SEND_MSG:
                 processSendMessage(tcpMessage, ctx);
-                break;
             default:
                 break;
         }
@@ -96,13 +94,15 @@ public class ServerMessageProcessor implements MessageProcessor {
             .setRemote(ctx.channel().remoteAddress().toString())
             .setMessageType(tcpMessage.getMessageType())
             .setMessagePayload(messagePayload)
+            .setReqType(1)
             .build();
 
         messageServiceStub.sendMessage(request, new StreamObserver<MessageReply>() {
             @Override
             public void onNext(MessageReply value) {
                 log.info("onNext {} {}", value, ctx.channel().remoteAddress());
-                replyToClient(value);
+            
+                reply(value);
             }
 
             @Override
@@ -117,7 +117,35 @@ public class ServerMessageProcessor implements MessageProcessor {
         });
     }
 
-    private void replyToClient(MessageReply reply) {
+    // private void process1(TcpMessage tcpMessage, ChannelHandlerContext ctx) {
+    //     MessageRequest request = MessageRequest.newBuilder()
+    //         .setId(ctx.channel().remoteAddress().toString())
+    //         .setRemote(ctx.channel().remoteAddress().toString())
+    //         .setMessageType(tcpMessage.getMessageType())
+    //         .setMessagePayload(tcpMessage.getMessagePayload() == null ? ByteString.EMPTY: ByteString.copyFrom(tcpMessage.getMessagePayload()))
+    //         .setReqType(1)
+    //         .build();
+
+    //     messageServiceStub.sendMessage(request, new StreamObserver<MessageReply>() {
+    //         @Override
+    //         public void onNext(MessageReply value) {
+    //             log.info("onNext {} {}", value, ctx.channel().remoteAddress());
+    //             replyToClient(value);
+    //         }
+
+    //         @Override
+    //         public void onError(Throwable t) {
+    //             log.error("onError", t);
+    //         }
+
+    //         @Override
+    //         public void onCompleted() {
+    //             log.info("onComplete process0 {}", request);
+    //         }
+    //     });
+    // }
+
+    private void reply(MessageReply reply) {
         String remote = reply.getRemote();
         ChannelHandlerContext ctx = remoteMap.get(remote);
         if (null == ctx) {
@@ -134,11 +162,8 @@ public class ServerMessageProcessor implements MessageProcessor {
         tcpMessage.setMessageType(type);
         tcpMessage.setMessagePayload(payload);
     
-        ctx.writeAndFlush(tcpMessage).addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture future) throws Exception {
-                log.info("write to {}", ctx.channel().remoteAddress());
-            }
+        ctx.writeAndFlush(tcpMessage).addListener((ChannelFuture future) -> {
+            log.info("write to {}", ctx.channel().remoteAddress());
         });
     }
 }

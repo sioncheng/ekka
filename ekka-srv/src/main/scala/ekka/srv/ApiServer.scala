@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 import scala.util.Success
 import scala.util.Failure
 import akka.grpc.scaladsl.ServiceHandler
-import org.checkerframework.checker.units.qual.h
+// import org.checkerframework.checker.units.qual.h
 import ekka.srv.api.message.MessageServiceHandler
 import akka.grpc.scaladsl.ServerReflection
 import ekka.srv.api.message.MessageService
@@ -20,12 +20,22 @@ import akka.actor.typed.ActorRef
 import akka.cluster.sharding.typed.ShardingEnvelope
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
 import akka.cluster.sharding.typed.scaladsl.Entity
+import akka.cluster.sharding.typed.scaladsl.ClusterSharding
+import akka.actor.typed.ActorRef
+import akka.cluster.sharding.typed.ShardingEnvelope
+import ekka.srv.cluster.MessageProtocol
+
 
 object ApiServer {
-  def apply(system: ActorSystem[_]) = new ApiServer(system)
+    def apply(system: ActorSystem[_],
+        sharding: ClusterSharding,
+        shardingRegion: ActorRef[ShardingEnvelope[MessageProtocol.Command]]) = 
+            new ApiServer(system, sharding, shardingRegion)
 }
 
-class ApiServer(system: ActorSystem[_]) {
+class ApiServer(system: ActorSystem[_], 
+    sharding: ClusterSharding, 
+    shardingRegion:ActorRef[ShardingEnvelope[MessageProtocol.Command]] ) {
 
   def run(): Future[Http.ServerBinding] = {
     system.log.info("GreeterServer#run")
@@ -41,10 +51,10 @@ class ApiServer(system: ActorSystem[_]) {
       GreeterServiceHandler.partial(GreeterServiceImpl(system))
 
     val messageService: PartialFunction[HttpRequest, Future[HttpResponse]] =
-      MessageServiceHandler.partial(MessageServiceImpl(system, shardingRegion))
+        MessageServiceHandler.partial(MessageServiceImpl(system, sharding, shardingRegion))
 
     val reflections: PartialFunction[HttpRequest, Future[HttpResponse]] =
-      ServerReflection.partial(List(GreeterService, MessageService))
+      ServerReflection.partial(List( MessageService))
 
     val services: HttpRequest => Future[HttpResponse] =
       ServiceHandler.concatOrNotFound(hello, messageService, reflections)

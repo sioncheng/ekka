@@ -19,9 +19,12 @@ public class TcpMessageHandler extends SimpleChannelInboundHandler<TcpMessage> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         if (messageProcessor == null) {
+            TcpMessage tcpMessage1 = new TcpMessage();
+            tcpMessage1.setMessageType((byte)1);
+            ctx.writeAndFlush(tcpMessage1);
+
             TcpMessage tcpMessage = new TcpMessage();
             tcpMessage.setMessageType((byte)0);
-
             ctx.writeAndFlush(tcpMessage);
         } else {
             messageProcessor.active(ctx);
@@ -41,9 +44,10 @@ public class TcpMessageHandler extends SimpleChannelInboundHandler<TcpMessage> {
             return;
         }
 
-        log.info("channelRead0 {}", msg.getMessageType());
-        if (messageProcessor != null) {
-            messageProcessor.processTcpMessage(msg, ctx);
+        log.info("channelRead0 {} {}", msg.getMessageType(), messageProcessor == null);
+        if (messageProcessor == null) {
+            return;
         }
+        messageProcessor.processTcpMessage(msg, ctx);
     }
 }

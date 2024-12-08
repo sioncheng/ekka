@@ -42,4 +42,10 @@ public interface MessageRequestOrBuilder extends
    * @return The messagePayload.
    */
   com.google.protobuf.ByteString getMessagePayload();
+
+  /**
+   * <code>int32 reqType = 5;</code>
+   * @return The reqType.
+   */
+  int getReqType();
 }

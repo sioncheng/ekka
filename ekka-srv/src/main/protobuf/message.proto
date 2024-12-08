@@ -17,6 +17,7 @@ message MessageRequest {
     string remote = 2;
     int32 messageType = 3;
     bytes messagePayload = 4;
+    int32 reqType = 5;
 }
 
 // The response message
@@ -25,4 +26,5 @@ message MessageReply {
     string remote = 2;
     int32 messageType = 3;
     bytes messagePayload = 4;
+    int32 resType = 5;
 }

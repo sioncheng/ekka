@@ -77,6 +77,11 @@ private static final long serialVersionUID = 0L;
             messagePayload_ = input.readBytes();
             break;
           }
+          case 40: {
+
+            resType_ = input.readInt32();
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -201,6 +206,16 @@ private static final long serialVersionUID = 0L;
     return messagePayload_;
   }
 
+  public static final int RESTYPE_FIELD_NUMBER = 5;
+  private int resType_;
+  /**
+   * <code>int32 resType = 5;</code>
+   * @return The resType.
+   */
+  public int getResType() {
+    return resType_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -227,6 +242,9 @@ private static final long serialVersionUID = 0L;
     if (!messagePayload_.isEmpty()) {
       output.writeBytes(4, messagePayload_);
     }
+    if (resType_ != 0) {
+      output.writeInt32(5, resType_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -249,6 +267,10 @@ private static final long serialVersionUID = 0L;
     if (!messagePayload_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(4, messagePayload_);
+    }
+    if (resType_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(5, resType_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -273,6 +295,8 @@ private static final long serialVersionUID = 0L;
         != other.getMessageType()) return false;
     if (!getMessagePayload()
         .equals(other.getMessagePayload())) return false;
+    if (getResType()
+        != other.getResType()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -292,6 +316,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getMessageType();
     hash = (37 * hash) + MESSAGEPAYLOAD_FIELD_NUMBER;
     hash = (53 * hash) + getMessagePayload().hashCode();
+    hash = (37 * hash) + RESTYPE_FIELD_NUMBER;
+    hash = (53 * hash) + getResType();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -437,6 +463,8 @@ private static final long serialVersionUID = 0L;
 
       messagePayload_ = com.google.protobuf.ByteString.EMPTY;
 
+      resType_ = 0;
+
       return this;
     }
 
@@ -467,6 +495,7 @@ private static final long serialVersionUID = 0L;
       result.remote_ = remote_;
       result.messageType_ = messageType_;
       result.messagePayload_ = messagePayload_;
+      result.resType_ = resType_;
       onBuilt();
       return result;
     }
@@ -528,6 +557,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getMessagePayload() != com.google.protobuf.ByteString.EMPTY) {
         setMessagePayload(other.getMessagePayload());
+      }
+      if (other.getResType() != 0) {
+        setResType(other.getResType());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -769,6 +801,36 @@ private static final long serialVersionUID = 0L;
     public Builder clearMessagePayload() {
       
       messagePayload_ = getDefaultInstance().getMessagePayload();
+      onChanged();
+      return this;
+    }
+
+    private int resType_ ;
+    /**
+     * <code>int32 resType = 5;</code>
+     * @return The resType.
+     */
+    public int getResType() {
+      return resType_;
+    }
+    /**
+     * <code>int32 resType = 5;</code>
+     * @param value The resType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setResType(int value) {
+      
+      resType_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 resType = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearResType() {
+      
+      resType_ = 0;
       onChanged();
       return this;
     }

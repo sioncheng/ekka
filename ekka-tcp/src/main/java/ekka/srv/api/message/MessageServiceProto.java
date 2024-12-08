@@ -33,14 +33,15 @@ public final class MessageServiceProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rmessage.proto\"Y\n\016MessageRequest\022\n\n\002id\030" +
+      "\n\rmessage.proto\"j\n\016MessageRequest\022\n\n\002id\030" +
       "\001 \001(\t\022\016\n\006remote\030\002 \001(\t\022\023\n\013messageType\030\003 \001" +
-      "(\005\022\026\n\016messagePayload\030\004 \001(\014\"W\n\014MessageRep" +
-      "ly\022\n\n\002id\030\001 \001(\t\022\016\n\006remote\030\002 \001(\t\022\023\n\013messag" +
-      "eType\030\003 \001(\005\022\026\n\016messagePayload\030\004 \001(\0142A\n\016M" +
-      "essageService\022/\n\013SendMessage\022\017.MessageRe" +
-      "quest\032\r.MessageReply\"\000B-\n\024ekka.srv.api.m" +
-      "essageB\023MessageServiceProtoP\001b\006proto3"
+      "(\005\022\026\n\016messagePayload\030\004 \001(\014\022\017\n\007reqType\030\005 " +
+      "\001(\005\"h\n\014MessageReply\022\n\n\002id\030\001 \001(\t\022\016\n\006remot" +
+      "e\030\002 \001(\t\022\023\n\013messageType\030\003 \001(\005\022\026\n\016messageP" +
+      "ayload\030\004 \001(\014\022\017\n\007resType\030\005 \001(\0052A\n\016Message" +
+      "Service\022/\n\013SendMessage\022\017.MessageRequest\032" +
+      "\r.MessageReply\"\000B-\n\024ekka.srv.api.message" +
+      "B\023MessageServiceProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -51,13 +52,13 @@ public final class MessageServiceProto {
     internal_static_MessageRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_MessageRequest_descriptor,
-        new java.lang.String[] { "Id", "Remote", "MessageType", "MessagePayload", });
+        new java.lang.String[] { "Id", "Remote", "MessageType", "MessagePayload", "ReqType", });
     internal_static_MessageReply_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_MessageReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_MessageReply_descriptor,
-        new java.lang.String[] { "Id", "Remote", "MessageType", "MessagePayload", });
+        new java.lang.String[] { "Id", "Remote", "MessageType", "MessagePayload", "ResType", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

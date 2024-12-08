@@ -42,4 +42,10 @@ public interface MessageReplyOrBuilder extends
    * @return The messagePayload.
    */
   com.google.protobuf.ByteString getMessagePayload();
+
+  /**
+   * <code>int32 resType = 5;</code>
+   * @return The resType.
+   */
+  int getResType();
 }
